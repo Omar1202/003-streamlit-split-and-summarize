@@ -94,4 +94,4 @@ if uploaded_file is not None:
 
     summary_output = summarize_chain.invoke(splitted_documents)
 
-    st.write(summary_output.content)
+    st.write(summary_output["output_text"])
