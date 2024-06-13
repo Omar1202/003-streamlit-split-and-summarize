@@ -1,15 +1,15 @@
 import streamlit as st
 from langchain import PromptTemplate
-from langchain_openai import OpenAI
+from langchain_groq import ChatGroq
 from langchain.chains.summarize import load_summarize_chain
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import pandas as pd
 from io import StringIO
 
 #LLM and key loading function
-def load_LLM(openai_api_key):
-    # Make sure your openai_api_key is set as an environment variable
-    llm = OpenAI(temperature=0, openai_api_key=openai_api_key)
+def load_LLM(groq_api_key):
+    # Make sure your groq_api_key is set as an environment variable
+    llm = ChatGroq(temperature=0, api_key=groq_api_key)
     return llm
 
 
@@ -22,20 +22,20 @@ st.header("AI Long Text Summarizer")
 col1, col2 = st.columns(2)
 
 with col1:
-    st.markdown("ChatGPT cannot summarize long texts. Now you can do it with this app.")
+    st.markdown("LLM's cannot summarize long texts. Now you can do it with this app.")
 
 with col2:
     st.write("Contact with [AI Accelera](https://aiaccelera.com) to build your AI Projects")
 
 
 #Input OpenAI API Key
-st.markdown("## Enter Your OpenAI API Key")
+st.markdown("## Enter Your Groq API Key")
 
-def get_openai_api_key():
-    input_text = st.text_input(label="OpenAI API Key ",  placeholder="Ex: sk-2twmA8tfCb8un4...", key="openai_api_key_input", type="password")
+def get_groq_api_key():
+    input_text = st.text_input(label="Groq API Key ",  placeholder="Ex: gsk_2twmA8tfCb8un4...", key="groq_api_key_input", type="password")
     return input_text
 
-openai_api_key = get_openai_api_key()
+groq_api_key = get_groq_api_key()
 
 
 # Input
@@ -71,9 +71,9 @@ if uploaded_file is not None:
         st.stop()
 
     if file_input:
-        if not openai_api_key:
-            st.warning('Please insert OpenAI API Key. \
-            Instructions [here](https://help.openai.com/en/articles/4936850-where-do-i-find-my-secret-api-key)', 
+        if not groq_api_key:
+            st.warning('Please insert Groq API Key. \
+            Instructions [here](https://console.groq.com/keys)', 
             icon="⚠️")
             st.stop()
 
@@ -85,13 +85,13 @@ if uploaded_file is not None:
 
     splitted_documents = text_splitter.create_documents([file_input])
 
-    llm = load_LLM(openai_api_key=openai_api_key)
+    llm = load_LLM(groq_api_key=groq_api_key)
 
     summarize_chain = load_summarize_chain(
         llm=llm, 
         chain_type="map_reduce"
         )
 
-    summary_output = summarize_chain.run(splitted_documents)
+    summary_output = summarize_chain.invoke(splitted_documents)
 
-    st.write(summary_output)
+    st.write(summary_output.content)
