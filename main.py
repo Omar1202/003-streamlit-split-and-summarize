@@ -92,6 +92,6 @@ if uploaded_file is not None:
         chain_type="map_reduce"
         )
 
-    summary_output = summarize_chain.invoke(splitted_documents)
+    summary_output = summarize_chain.run(splitted_documents)
 
     st.write(summary_output.content)
