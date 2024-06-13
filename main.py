@@ -1,7 +1,7 @@
 import streamlit as st
 from langchain import PromptTemplate
 from langchain_groq import ChatGroq
-from langchain.chains.summarize.chain import load_summarize_chain
+from langchain.chains.summarize import load_summarize_chain
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import pandas as pd
 from io import StringIO
@@ -9,7 +9,7 @@ from io import StringIO
 #LLM and key loading function
 def load_LLM(groq_api_key):
     # Make sure your groq_api_key is set as an environment variable
-    llm = ChatGroq(temperature=0, api_key=groq_api_key)
+    llm = ChatGroq(temperature=0, api_key=groq_api_key, model="llama3-70b-8192")
     return llm
 
 
@@ -92,6 +92,6 @@ if uploaded_file is not None:
         chain_type="map_reduce"
         )
 
-    summary_output = summarize_chain.run(splitted_documents)
+    summary_output = summarize_chain.invoke(splitted_documents)
 
     st.write(summary_output.content)
